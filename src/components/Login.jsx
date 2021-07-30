@@ -2,6 +2,9 @@ import React, { Component } from 'react'
 import axios from 'axios';
 import md5 from 'md5';
 
+const baseUrl= "https://movies-geek.herokuapp.com/usuario";
+const cookies = new Cookies();
+
 
 export default class Login extends Component {
   constructor() {
@@ -23,7 +26,21 @@ export default class Login extends Component {
     console.log(this.state.form)
   }
   iniciarSesion = async () => {
-    console.log(`Bienvenido ${this.state.form.email}` )
+    await axios.get(baseUrl, { params: { username: this.states.form.username, password: md5(this.state.form.password)}})
+    .then(response => {
+      return response.data;
+    })
+    .then(response => {
+      if(response.length > 0) {
+        var respuesta = response[0];
+        alert("Bienvenido ${respuesta.nombre} ${respuesta.apellido_paterno}");
+      }else {
+        alert("El usuario o la contraseña no son correctos");
+      }
+    })
+    .catch(error => {
+      console.log(error);
+    })
   }
 
   handleSubmit = (e) => {
